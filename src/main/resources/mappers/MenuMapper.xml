@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wiserun.myvhr.mapper.MenuMapper">
+    <resultMap id="baseResultMap" type="com.wiserun.myvhr.bean.Menu">
+        <id column="id" property="id" jdbcType="INTEGER"></id>
+        <result column="url" property="url" jdbcType="VARCHAR"></result>
+        <result column="path" property="path" jdbcType="VARCHAR"></result>
+        <result column="component" property="component" javaType="java.lang.Object"></result>
+        <result column="name" property="name" jdbcType="VARCHAR"></result>
+        <result column="iconCls" property="iconCls" jdbcType="VARCHAR"></result>
+        <result column="parentId" property="parentId" jdbcType="INTEGER"></result>
+        <association property="meta" javaType="com.wiserun.myvhr.bean.MenuMeta">
+            <result column="keepAlive" property="keepAlive"></result>
+            <result column="requireAuth" property="requireAuth"></result>
+        </association>
+        <collection property="roles" ofType="com.wiserun.myvhr.bean.Role">
+            <id column="rid" property="id" jdbcType="INTEGER"></id>
+            <result column="rname" property="name" jdbcType="VARCHAR"></result>
+            <result column="rnamezh" property="nameZh" jdbcType="VARCHAR"></result>
+        </collection>
+        <collection property="children" ofType="com.wiserun.myvhr.bean.Menu">
+            <id column="id2" property="id"></id>
+            <result column="path2" property="path" jdbcType="VARCHAR"></result>
+            <result column="component2" property="component" javaType="java.lang.Object"></result>
+            <result column="name2" property="name" jdbcType="VARCHAR"></result>
+            <result column="iconCls2" property="iconCls" jdbcType="VARCHAR"></result>
+            <association property="meta" javaType="com.wiserun.myvhr.bean.MenuMeta">
+                <result column="keepAlive2" property="keepAlive" ></result>
+                <result column="requireAuth2" property="requireAuth"></result>
+            </association>
+            <collection property="children" ofType="com.wiserun.myvhr.bean.Menu">
+                <id column="id3" property="id"></id>
+                <result column="name3" property="name" jdbcType="VARCHAR"></result>
+            </collection>
+        </collection>
+    </resultMap>
+    <!--获取所有菜单-->
+    <select id="getAllMenu" resultMap="baseResultMap">
+select
+	m.*,
+	r.id rid,
+	r.name rname,
+	r.nameZH rnamezh
+from
+	menu m
+left join
+	menu_role mr
+on
+  m.id = mr.mid
+left join
+  role r
+on
+	r.id=mr.rid
+where
+  m.enabled=true
+
+    </select>
+
+    <!--获得菜单树-->
+</mapper>
